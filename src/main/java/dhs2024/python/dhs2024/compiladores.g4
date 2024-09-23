@@ -51,6 +51,7 @@ instrucciones : instruccion instrucciones
               ;
 
 //instruccion : INST {print($INST.text[:-1])};
+
 instruccion : declaracion 
             | iwhile
 //            | ifor
