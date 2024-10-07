@@ -23,6 +23,7 @@ DEC : '--' ;
 //OPERADORES LOGICOS
 AND : '&&' ;
 OR : '||' ;
+NOT : '!=' ;
 
 
 NUMERO : DIGITO+ ;
@@ -68,8 +69,8 @@ instrucciones : instruccion instrucciones
 
 instruccion : declaracion 
             | iwhile
-//            | ifor
-//            | iif
+            | ifor
+            | iif
             | bloque
             | asignacion
  //           | asignacion PYC
@@ -82,11 +83,12 @@ asignacion : ID ASIG opal PYC;
 opal : exp ; //completar
 // terminar for, if, operaciones logicas
 
-exp : log l ;
+exp : log a ;
 
-e : SUMA term e
-  | RESTA term e
-  | term e
+op : term e ;
+e : SUMA op e
+  | RESTA op e
+  | op e
   |
   ; 
 
@@ -97,7 +99,20 @@ t : MULT factor t
   |
   ;
 
-logic : term e ;
+comp : op c ;
+c : MAYOR comp c
+  | MENOR comp c
+  | MAI comp c
+  | MEI comp c
+  |
+  ;
+
+inot : comp n ;
+n : NOT inot n
+  |
+  ;
+
+logic : inot l ;
 l : AND logic l
   |
   ;
@@ -127,7 +142,7 @@ ifor  : FOR PA  init  PYC cond PYC iter PC  instruccion;
 init  : asignacion
       |
       ;
-cond : logic
+cond : comp
      |
      ;
 iter  : ID INC
@@ -136,8 +151,8 @@ iter  : ID INC
       |
       ;
 
-iif:  PA cond PC instruccion
-    | PA cond PC instruccion ielse;
+iif:  IF PA cond PC instruccion
+    | IF PA cond PC instruccion ielse;
 
 ielse : ELSE instruccion;
 
