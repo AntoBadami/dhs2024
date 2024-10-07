@@ -10,16 +10,29 @@ PC : ')' ;
 PYC : ';' ;
 LLA : '{' ;
 LLC : '}' ;
+
+//OPERADORES ARITMETICOS
 SUMA : '+' ;
 RESTA : '-' ;
 MULT : '*' ;
 DIV : '/' ;
 MOD : '%' ;
+INC : '++' ;
+DEC : '--' ;
+
+//OPERADORES LOGICOS
+AND : '&&' ;
+OR : '||' ;
+
 
 NUMERO : DIGITO+ ;
 
 ASIG : '=' ;
 IGUAL : '==' ;
+MENOR : '<' ;
+MAYOR : '>' ;
+MEI : '<=' ;
+MAI : '>=' ;
 INT : 'int' ;
 WHILE : 'while' ;
 FOR : 'for' ;
@@ -58,6 +71,7 @@ instruccion : declaracion
 //            | iif
             | bloque
             | asignacion
+ //           | asignacion PYC
             ;
 
 declaracion : INT ID PYC;
@@ -66,10 +80,12 @@ asignacion : ID ASIG opal PYC;
 
 opal : exp ; //completar
 // terminar for, if, operaciones logicas
-exp : term e ;
+
+exp : log l ;
 
 e : SUMA term e
   | RESTA term e
+  | term e
   |
   ; 
 
@@ -80,10 +96,21 @@ t : MULT factor t
   |
   ;
 
+logic : term e ;
+l : AND logic l
+  |
+  ;
+
+log: logic a ;
+a : OR log a
+  |
+  ;
+
 factor : NUMERO 
        | ID
        | PA exp PC
        ;
+
 
 iwhile : WHILE PA ID PC instruccion;
 
@@ -93,4 +120,20 @@ bloque : LLA instrucciones LLC;
 // init : ;
 // cond : ;
 // iter : ;
+// estructura for
+ifor  : FOR PA  init  PYC cond PYC iter PC  instruccion;
+
+init  : asignacion
+      |
+      ;
+cond : logic
+     |
+     ;
+iter  : ID INC
+      | ID DEC
+      | asignacion
+      |
+      ;
+
+iif:  PA cond PC instruccion;
 
