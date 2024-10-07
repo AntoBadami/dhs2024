@@ -37,6 +37,7 @@ INT : 'int' ;
 WHILE : 'while' ;
 FOR : 'for' ;
 IF : 'if' ;
+ELSE : 'else' ;
 
 ID : (LETRA | '_')(LETRA | DIGITO | '_')* ;
 
@@ -135,5 +136,8 @@ iter  : ID INC
       |
       ;
 
-iif:  PA cond PC instruccion;
+iif:  PA cond PC instruccion
+    | PA cond PC instruccion ielse;
+
+ielse : ELSE instruccion;
 
