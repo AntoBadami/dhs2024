@@ -109,6 +109,7 @@ c : MAYOR comp c
 
 inot : comp n ;
 n : NOT inot n
+  | IGUAL inot n
   |
   ;
 
@@ -132,11 +133,6 @@ iwhile : WHILE PA ID PC instruccion;
 
 bloque : LLA instrucciones LLC;
 
-// ifor : FOR PA init PYC cond PYC iter PC instruccion ;
-// init : ;
-// cond : ;
-// iter : ;
-// estructura for
 ifor  : FOR PA  init  PYC cond PYC iter PC  instruccion;
 
 init  : asignacion
