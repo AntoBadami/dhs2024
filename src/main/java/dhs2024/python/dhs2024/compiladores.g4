@@ -81,29 +81,17 @@ declaracion : INT ID PYC;
 asignacion : ID ASIG opal PYC;
 
 opal : exp ; //completar
-// terminar for, if, operaciones logicas
 
-exp : log a ;
+//exp : lor a ;
+exp : lor ;
 
-op : term e ;
-e : SUMA op e
-  | RESTA op e
-  | op e
-  |
-  ; 
-
-term : factor t ;
-t : MULT factor t 
-  | DIV factor t
-  | MOD factor t
+lor: land a ;
+a : OR lor a
   |
   ;
 
-comp : op c ;
-c : MAYOR comp c
-  | MENOR comp c
-  | MAI comp c
-  | MEI comp c
+land : inot l ;
+l : AND land l
   |
   ;
 
@@ -113,14 +101,35 @@ n : NOT inot n
   |
   ;
 
-logic : inot l ;
-l : AND logic l
+comp : op c ;
+/*c : MAYOR comp c
+  | MENOR comp c
+  | MAI comp c
+  | MEI comp c
   |
+  ;*/
+c : (MAYOR | MENOR | MAI | MEI) comp  // Comparadores
+  |                                   // Regla vacía permitiendo finalizar sin comparador
   ;
 
-log: logic a ;
-a : OR log a
+op : term e ;
+/*e : SUMA op e
+  | RESTA op e
+//  | op e
   |
+  ; */
+e : (SUMA | RESTA) op 
+  |                  // Regla vacía permitiendo finalizar sin SUMA o RESTA
+  ;
+
+term : factor t ;
+/*t : MULT factor t 
+  | DIV factor t
+  | MOD factor t
+  |
+  ;*/
+t : (MULT | DIV | MOD) factor 
+  |                       // Regla vacía permitiendo finalizar sin operador
   ;
 
 factor : NUMERO 
