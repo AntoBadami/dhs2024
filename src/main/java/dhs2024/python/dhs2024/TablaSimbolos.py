@@ -6,34 +6,33 @@ class TablaSimbolos:
     def __init__(self):
         self.contextos = []
 
+    # Añade un contexto a la pila de contextos 
     def addContexto(self):
         contexto = Contexto()
         self.contextos.append(contexto)
         return contexto
 
-    def delContexto(self,contexto):
-        if contexto in self.contextos:
-            self.contextos.remove(contexto)
-            return True
-        else:
-            return False
+    # Elimina ultimo contexto añadido a la pila
+    # y lo retorna
+    def delContexto(self):
+        return self.contextos.pop()
     
-    def addIdentificador(self,id : ID):
-        if not id.nombre in self.contextos[-1].tabla:
-            self.contextos[-1].tabla[id.nombre] = id
-            return True
-        else:
-            return False
+    # Agrega un identificador al ultimo contexto de la pila
+    # retorna True si lo logra
+    # de lo contrario retorna False   
+    def addIdentificador(self,id):
+        self.contextos[-1].addIdentificador(id)
 
+    # Busca identificador en el contexto actual y retorna si lo encuentra 
     def buscarLocal(self,strid):
         if strid in self.contextos[-1].tabla:
-            return self.contextos[-1].tabla[strid]
+            return True
         else:
-            return None
+            return False
 
     def buscarGlobal(self,strid):
-        for contexto in self.contextos:
+        for contexto in reversed(self.contextos):
             if strid in contexto.tabla:
-                return contexto.tabla[strid]
-        return None
+                return True
+        return False
     

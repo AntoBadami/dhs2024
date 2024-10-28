@@ -10,6 +10,7 @@ PC : ')' ;
 PYC : ';' ;
 LLA : '{' ;
 LLC : '}' ;
+C: ',';
 
 //OPERADORES ARITMETICOS
 SUMA : '+' ;
@@ -34,11 +35,16 @@ MENOR : '<' ;
 MAYOR : '>' ;
 MEI : '<=' ;
 MAI : '>=' ;
-INT : 'int' ;
 WHILE : 'while' ;
 FOR : 'for' ;
 IF : 'if' ;
 ELSE : 'else' ;
+
+//TIPO DE DATOS
+INT : 'int' ;
+VOID : 'void';
+CHAR : 'char';
+FLOAT : 'float';
 
 ID : (LETRA | '_')(LETRA | DIGITO | '_')* ;
 
@@ -67,7 +73,7 @@ instrucciones : instruccion instrucciones
 
 //instruccion : INST {print($INST.text[:-1])};
 
-instruccion : declaracion 
+instruccion : declaracion PYC
             | iwhile
             | ifor
             | iif
@@ -76,7 +82,7 @@ instruccion : declaracion
  //           | asignacion PYC
             ;
 
-declaracion : INT ID PYC;
+declaracion : (INT | VOID | CHAR | FLOAT) ID;
 
 asignacion : ID ASIG opal PYC;
 
@@ -135,8 +141,13 @@ t : (MULT | DIV | MOD) factor
 factor : NUMERO 
        | ID
        | PA exp PC
+       | suf
+       | pref
        ;
 
+suf : ID (INC | DEC);
+
+pref : (INC | DEC)  ID;
 
 iwhile : WHILE PA ID PC instruccion;
 
@@ -161,3 +172,11 @@ iif:  IF PA cond PC instruccion
 
 ielse : ELSE instruccion;
 
+ifuncion : tipo ID PA param PC instruccion;
+
+tipo: (INT | VOID | CHAR | FLOAT);
+
+param: declaracion
+      |declaracion C param
+      |
+      ;

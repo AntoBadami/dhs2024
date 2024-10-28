@@ -15,9 +15,9 @@ class Escucha (compiladoresListener) :
     
     def enterPrograma(self, ctx:compiladoresParser.ProgramaContext):
         print("Comienza la compilacion")
-        mainfunc = Funcion("main",0,True,True,[])
-        maincontext = self.tabla.addContexto()
-        self.tabla.addIdentificador(mainfunc)
+        
+        # Añadimos contexto global
+        self.tabla.addContexto()
 
     # Exit a parse tree produced by compiladoresParser#programa.
     def exitPrograma(self, ctx:compiladoresParser.ProgramaContext):
@@ -25,13 +25,17 @@ class Escucha (compiladoresListener) :
         print("Se encontraron:")
         print("\tNodos: " + str(self.numNodos))
         print("\tTokens: " + str(self.numTokens))
+
+        # Borrar contexto global
+        self.tabla.delContexto()
         
     
     # Enter a parse tree produced by compiladoresParser#iwhile.
     def enterIwhile(self, ctx:compiladoresParser.IwhileContext):
-        print("Encontre while")
-        print("\tCantidad hijos: " + str(ctx.getChildCount()))
-        print("\tTokens: " + ctx.getText())
+        print("While")
+        
+        # Iniciamos contexto while
+        self.tabla.addContexto()
 
     # Exit a parse tree produced by compiladoresParser#iwhile.
     def exitIwhile(self, ctx:compiladoresParser.IwhileContext):
@@ -39,26 +43,38 @@ class Escucha (compiladoresListener) :
         print("\tCantidad hijos: " + str(ctx.getChildCount()))
         print("\tTokens: " + ctx.getText())
 
+        # Borramos contexto while
+        self.tabla.delContexto()
+
     # Enter a parse tree produced by compiladoresParser#declaracion.
     def enterDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
         print("### Declaracion")
         
     # Exit a parse tree produced by compiladoresParser#declaracion.
     def exitDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
-        print("\tNombre variable: " + ctx.getChild(1).getText())
+        #me muevo y le pido el texto a la hoja
+        #hijo [0 en adelante], elijo el 1
+        #print("\tNombre de la variable: " + ctx.getChild(1).getText())
+        
+        vartype = ctx.getChild(0).getText().upper()
+        name = ctx.getChild(1).getText()
+        
+        # Creacion de variable
+        variable = Variable(name,vartype,False,False)
+        if not self.tabla.buscarGlobal(variable.nombre):
+            self.tabla.addIdentificador(variable)
+            print(f"  variable añadida{variable}")
+        else:
+            print("\tERROR SEMANTICO ---> identificador repetido")
 
-        #declaracion de variables
-        #tip de dato
-        tipodato = None
-        if ctx.getChild(0).getText() == "int" :
-            tipodato = TipoDato.INT
+    # Enter a parse tree produced by compiladoresParser#asignacion.
+    def enterAsignacion(self, ctx:compiladoresParser.AsignacionContext):
+        print("\tAsignacion")  
 
-        variable = Variable(ctx.getChild(1).getText(),tipodato,False,False)
-
-        #aniadir al ultimo contexto 
-        self.tabla.addIndentificador(variable)
-        print("Variable: ")
-        print(variable)
+    # Exit a parse tree produced by compiladoresParser#asignacion.
+    def exitAsignacion(self, ctx:compiladoresParser.AsignacionContext):
+        if not self.tabla.buscarGlobal(ctx.getChild(0).getText()):
+            print("\tERROR SEMANTICO ---> identificador no declarado")        
 
     def visitTerminal(self, node: TerminalNode):
         print("---> Token " + node.getText())

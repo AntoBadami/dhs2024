@@ -6,3 +6,6 @@ class Variable(ID):
         self.tipoDato = tipoDato
         self.inicializado = inicializado
         self.usado = usado
+
+    def __str__(self):
+            return"""Nombre:{} Tipo:{}""".format(self.nombre,self.tipoDato)
