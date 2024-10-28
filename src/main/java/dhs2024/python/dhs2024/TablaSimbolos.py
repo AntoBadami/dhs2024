@@ -26,13 +26,13 @@ class TablaSimbolos:
     # Busca identificador en el contexto actual y retorna si lo encuentra 
     def buscarLocal(self,strid):
         if strid in self.contextos[-1].tabla:
-            return True
+            return self.contextos[-1].tabla[strid]
         else:
-            return False
+            return None
 
     def buscarGlobal(self,strid):
         for contexto in reversed(self.contextos):
             if strid in contexto.tabla:
-                return True
-        return False
+                return contexto.tabla[strid]
+        return None
     

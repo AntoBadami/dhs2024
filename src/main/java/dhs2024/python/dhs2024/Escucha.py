@@ -35,7 +35,7 @@ class Escucha (compiladoresListener) :
         
     # Enter a parse tree produced by compiladoresParser#declaracion.
     def enterDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
-        print("\t+Declaracion")
+        print("+Declaracion")
         
     # Exit a parse tree produced by compiladoresParser#declaracion.
     def exitDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
@@ -44,16 +44,17 @@ class Escucha (compiladoresListener) :
         #print("\tNombre de la variable: " + ctx.getChild(1).getText())
         
         vartype = ctx.getChild(0).getText().upper()
-        name = ctx.getChild(1).getText()
+        varname = ctx.getChild(1).getText()
         
         # Creacion de variable
-        variable = Variable(name,vartype,False,False)
-        if not self.tabla.buscarGlobal(variable.nombre):
-            self.tabla.addIdentificador(variable)
+        myvar = Variable(vartype,varname)
+        #verificar existencia en contexto
+        if not self.tabla.buscarLocal(myvar.nombre):
+            self.tabla.addIdentificador(myvar)
+            print(myvar)
         else:
-            print("\n-ERROR SEMANTICO:\n\tIdentificador repetido")
-        
-        print(f"\t{variable}")
+            print(f"\n-ERROR SEMANTICO:\n\tIdentificador repetido {myvar.nombre}")
+
 
     # Enter a parse tree produced by compiladoresParser#asignacion.
     def enterAsignacion(self, ctx:compiladoresParser.AsignacionContext):
@@ -61,7 +62,12 @@ class Escucha (compiladoresListener) :
 
     # Exit a parse tree produced by compiladoresParser#asignacion.
     def exitAsignacion(self, ctx:compiladoresParser.AsignacionContext):
-        if not self.tabla.buscarGlobal(ctx.getChild(0).getText()):
+
+        #buscar y asignar valor a variable, ademas establecer 
+        myvar = self.tabla.buscarGlobal(ctx.getChild(0).getText())
+        if myvar:
+            myvar.inicializado = True
+        else:
             print("\n-ERROR SEMANTICO:\n\tIdentificador no declarado")        
 
     # Enter a parse tree produced by compiladoresParser#iwhile.

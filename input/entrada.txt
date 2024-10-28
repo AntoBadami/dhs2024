@@ -1,3 +1,8 @@
 
 int x;
 int y;
+
+while(a){
+    int x;
+    y=2;
+}

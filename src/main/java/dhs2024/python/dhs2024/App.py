@@ -6,7 +6,7 @@ from Escucha import Escucha
 from Walker import Walker
 
 def main(argv):
-    archivo = "input/opal.txt"
+    archivo = "input/entrada.txt"
     if len(argv) > 1 :
         archivo = argv[1]
     input = FileStream(archivo)
